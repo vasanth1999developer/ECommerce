@@ -173,7 +173,7 @@ class AppModelCUDAPIViewSet(
         if hasattr(instance, "deleted_by"):
             instance.deleted_by = self.get_user()
             instance.save()
-        return self.send_response()
+        return self.send_response(data="Deleted.....")
 
     @action(
         methods=["GET"],

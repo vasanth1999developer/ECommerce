@@ -17,4 +17,5 @@ from .base import (
     SoftDeleteModel,
     StatusModel,
     UniqueIdentityBaseModel,
+    BaseIdentityModel,
 )

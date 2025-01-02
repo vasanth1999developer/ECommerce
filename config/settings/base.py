@@ -60,6 +60,9 @@ THIRD_PARTY_APPS = [
 
 CUSTOM_APPS = [
     "apps.common",
+    "apps.acess",
+    "apps.meta",
+    "apps.inventory",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
@@ -192,7 +195,7 @@ TEMP_ROOT = f"{MEDIA_ROOT}/temp"
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
-AUTH_USER_MODEL = "access.User"  # custom app user model
+AUTH_USER_MODEL = "acess.User"  # custom app user model
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]

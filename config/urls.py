@@ -9,7 +9,7 @@ admin.site.site_title = "Super Admin Portal"
 admin.site.index_title = "Welcome to Techademy Admin portal."
 
 urlpatterns = [
-    path("", include("apps.common.urls")),
+    path("", include("apps.common.urls")),      
     path(settings.ADMIN_URL, admin.site.urls),
 ]
 

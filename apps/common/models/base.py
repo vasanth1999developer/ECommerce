@@ -433,3 +433,20 @@ class DescriptionModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class BaseIdentityModel(BaseModel):
+    """
+    The model class that includes identity. Identity is basically a `name`.
+    This is applicable for anything like City etc.
+    """
+
+    class Meta(BaseModel.Meta):
+        abstract = True
+
+    identity = models.CharField(max_length=COMMON_CHAR_FIELD_MAX_LENGTH, verbose_name="Name/Title")
+
+    description = models.TextField(**COMMON_BLANK_AND_NULLABLE_FIELD_CONFIG)
+
+    def __str__(self):
+        return self.identity
