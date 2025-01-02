@@ -61,7 +61,6 @@ THIRD_PARTY_APPS = [
 CUSTOM_APPS = [
     "apps.common",
     "apps.acess",
-    "apps.meta",
     "apps.inventory",
 ]
 

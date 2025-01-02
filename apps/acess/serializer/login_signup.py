@@ -34,7 +34,7 @@ class UserCreateSerializer(AppCreateModelSerializer):
 
     class Meta(AppCreateModelSerializer.Meta):
         model = User
-        fields = ("first_name", "last_name", "email", "password", "phone_number", "gender", "role")
+        fields = ("first_name", "last_name", "email", "password", "phone_number", "gender")
 
     def validate_password(self, password):
         """
@@ -96,7 +96,7 @@ class UserRetrieveSerializer(AppReadOnlyModelSerializer):
 
     class Meta(AppReadOnlyModelSerializer.Meta):
         model = User
-        fields = ("id", "first_name", "last_name", "email", "phone_number", "gender", "role", "related_addresses")
+        fields = ("id", "first_name", "last_name", "email", "phone_number", "gender", "related_addresses", "role")
 
 
 class UserUpdateSerializer(AppCreateModelSerializer):
