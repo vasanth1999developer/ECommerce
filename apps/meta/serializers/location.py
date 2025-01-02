@@ -20,9 +20,7 @@ class StateCUDModelSerializer(AppWriteOnlyModelSerializer):
     def get_meta(self) -> dict:
         """Get meta & the  initial values."""
 
-        return {
-            "country": self.serialize_for_meta(Country.objects.all(), fields=["id", "identity"])
-        }
+        return {"country": self.serialize_for_meta(Country.objects.all(), fields=["id", "identity"])}
 
 
 class CityCUDModelSerializer(AppWriteOnlyModelSerializer):

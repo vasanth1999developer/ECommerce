@@ -1,10 +1,9 @@
 from rest_framework.decorators import action
 
+from apps.common.serializers import get_app_read_only_serializer as read_serializer
 from apps.common.views.api.generic import AppModelCUDAPIViewSet, AppModelListAPIViewSet
 from apps.meta.models.location import City, Country, State
 from apps.meta.serializers.location import CityCUDModelSerializer, CountryCUDModelSerializer, StateCUDModelSerializer
-from apps.common.serializers import get_app_read_only_serializer as read_serializer
-
 
 
 class CountryCUDApiViewSet(AppModelCUDAPIViewSet):
@@ -47,9 +46,7 @@ class StateListApiViewSet(AppModelListAPIViewSet):
     def meta(self, request, *args, **kwargs):
         """Filter Meta for Frontend."""
 
-        country = self.serializer_class().serialize_for_meta(
-            Country.objects.all(), fields=["id", "identity"]
-        )
+        country = self.serializer_class().serialize_for_meta(Country.objects.all(), fields=["id", "identity"])
         data = {"country": country}
         return self.send_response(data)
 
@@ -76,8 +73,6 @@ class CityListApiViewSet(AppModelListAPIViewSet):
     def meta(self, request, *args, **kwargs):
         """Filter Meta for Frontend."""
 
-        state = self.serializer_class().serialize_for_meta(
-            State.objects.all(), fields=["id", "identity"]
-        )
+        state = self.serializer_class().serialize_for_meta(State.objects.all(), fields=["id", "identity"])
         data = {"state": state}
         return self.send_response(data)

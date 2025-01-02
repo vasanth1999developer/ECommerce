@@ -27,5 +27,4 @@ router.register(f"{API_URL_PREFIX}/city/cud", CityCUDApiViewSet)
 router.register(f"{API_URL_PREFIX}/city/list", CityListApiViewSet, basename="city-list")
 
 
-
 urlpatterns = [] + router.urls

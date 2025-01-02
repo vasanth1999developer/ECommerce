@@ -9,6 +9,7 @@ from .base import (
     BaseCreationAndModificationModel,
     BaseCreationModel,
     BaseCUDSoftDeleteModel,
+    BaseIdentityModel,
     BaseModel,
     DescriptionModel,
     DraftModel,
@@ -17,5 +18,4 @@ from .base import (
     SoftDeleteModel,
     StatusModel,
     UniqueIdentityBaseModel,
-    BaseIdentityModel,
 )

@@ -189,7 +189,7 @@ else:
             "BACKEND": "apps.common.storages.MediaRootAzureStorage",
         },
     }
-MEDIA_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/media/"
+MEDIA_URL = f"https: //{AZURE_ACCOUNT_NAME}.blob.core.windows.net/media/"
 MEDIA_ROOT = str(APPS_DIR / "media")
 TEMP_ROOT = f"{MEDIA_ROOT}/temp"
 
@@ -224,7 +224,11 @@ X_FRAME_OPTIONS = "DENY"
 # ------------------------------------------------------------------------------
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = [*default_headers, "domain", "idp-token",]
+CORS_ALLOW_HEADERS = [
+    *default_headers,
+    "domain",
+    "idp-token",
+]
 
 # Api & Rest Framework
 # ------------------------------------------------------------------------------

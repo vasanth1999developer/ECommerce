@@ -1,10 +1,30 @@
 from django.urls import path
 
-from apps.acess.views.user import UserRetrieveViewSet
 from apps.common.routers import AppSimpleRouter
-from apps.inventory.views.category import CategoryCUDViewSet, CategoryListView, SubCategoryCUDViewSet, SubCategoryListView
-from apps.inventory.views.product import ProductCUDViewSet, ProductImageCUDViewSet, ProductImageListReviewViewSet, ProductImageReviewViewSet, ProductOffersCUDViewSet, ProductSpecificationCUDApiViewSet, RetriveProductListForBuyersViewSet, RetriveProductListViewSet, RetriveProductViewSet, SpecificationCUDViewSet, SpecificationListViewSet
-from apps.inventory.views.salesorder import AddProductWishListCUDViewSet, MoveWishListToCartView, UserWishListRetrieveViewSet
+from apps.inventory.views.category import (
+    CategoryCUDViewSet,
+    CategoryListView,
+    SubCategoryCUDViewSet,
+    SubCategoryListView,
+)
+from apps.inventory.views.product import (
+    ProductCUDViewSet,
+    ProductImageCUDViewSet,
+    ProductImageListReviewViewSet,
+    ProductImageReviewViewSet,
+    ProductOffersCUDViewSet,
+    ProductSpecificationCUDApiViewSet,
+    RetriveProductListForBuyersViewSet,
+    RetriveProductListViewSet,
+    RetriveProductViewSet,
+    SpecificationCUDViewSet,
+    SpecificationListViewSet,
+)
+from apps.inventory.views.salesorder import (
+    AddProductWishListCUDViewSet,
+    MoveWishListToCartView,
+    UserWishListRetrieveViewSet,
+)
 
 API_URL_PREFIX = "v1/inventory/"
 
@@ -36,16 +56,27 @@ router.register(f"{API_URL_PREFIX}offers", ProductOffersCUDViewSet, basename="of
 router.register(f"{API_URL_PREFIX}Specification", SpecificationCUDViewSet, basename="Specification")
 
 # ProductSpecification API
-router.register(f"{API_URL_PREFIX}product-specification", ProductSpecificationCUDApiViewSet, basename="product-specification")
+router.register(
+    f"{API_URL_PREFIX}product-specification", ProductSpecificationCUDApiViewSet, basename="product-specification"
+)
 
 # Wishlist API
 router.register(f"{API_URL_PREFIX}wishlist-list", UserWishListRetrieveViewSet, basename="wishlist-list")
 
 urlpatterns = [
-      path(f"{API_URL_PREFIX}get-specifications/", SpecificationListViewSet.as_view({"get": "list"}), name="specifications_list"),
-      path(f'{API_URL_PREFIX}wishlist/<int:product_id>/', AddProductWishListCUDViewSet.as_view({
-        'post': 'create',
-        'delete': 'destroy',
-          })),
-      path(f"{API_URL_PREFIX}add-to-cart", MoveWishListToCartView.as_view(), name="add-to-cart"),
+    path(
+        f"{API_URL_PREFIX}get-specifications/",
+        SpecificationListViewSet.as_view({"get": "list"}),
+        name="specifications_list",
+    ),
+    path(
+        f"{API_URL_PREFIX}wishlist/<int: product_id>/",
+        AddProductWishListCUDViewSet.as_view(
+            {
+                "post": "create",
+                "delete": "destroy",
+            }
+        ),
+    ),
+    path(f"{API_URL_PREFIX}add-to-cart", MoveWishListToCartView.as_view(), name="add-to-cart"),
 ] + router.urls
