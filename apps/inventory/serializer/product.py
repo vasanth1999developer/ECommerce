@@ -1,5 +1,8 @@
+from rest_framework import serializers
+
 from apps.common.serializers import AppReadOnlyModelSerializer, AppWriteOnlyModelSerializer
 from apps.inventory.models.product import Image, Offer, Product, ProductSpecification, Specification
+from apps.inventory.models.salesorder import OrderItem, RatingReview
 
 
 class ProductWriteSerializer(AppWriteOnlyModelSerializer):
@@ -128,3 +131,22 @@ class ProductSpecificationSerializer(AppWriteOnlyModelSerializer):
     class Meta(AppWriteOnlyModelSerializer.Meta):
         model = ProductSpecification
         fields = ("product", "specification", "value")
+
+
+class RatingReviewSerializer(AppWriteOnlyModelSerializer):
+    """RatingReviewSerializer class"""
+
+    class Meta(AppWriteOnlyModelSerializer.Meta):
+        model = RatingReview
+        fields = ["id", "user", "product", "rating", "review", "created_at"]
+        read_only_fields = ["user", "created_at"]
+
+    def validate(self, data):
+        """Ensure that the user has purchased the product before allowing a review."""
+
+        user = self.context["request"].user
+        product = data["product"]
+        if not OrderItem.objects.filter(product=product, user=user).exists():
+            raise serializers.ValidationError("You can only review products you have purchased.")
+
+        return data

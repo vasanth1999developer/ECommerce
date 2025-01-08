@@ -28,14 +28,16 @@ class User(AbstractUser, BaseArchivableModel):
 
     ********************************  Model Fields ********************************
     pk                  - id
-    charField           - password, role, first_name, last_name, role
-    DateTimeField       - created_at,modified_at
+    uuid                - uuid
+    charField           - password, role, first_name, last_name, role, gender
+    DateTimeField       - created_at, modified_at, last_login, date_joined, deleted_at
     EmailField          - email
     PhoneNumberField    - phone_number
+    BooleanField        - is_superuser, is_staff, is_active, is_deleted
     """
 
     username = None
-    phone_number = AppPhoneNumberField(**COMMON_BLANK_AND_NULLABLE_FIELD_CONFIG)
+    phone_number = AppPhoneNumberField(**COMMON_BLANK_AND_NULLABLE_FIELD_CONFIG, unique=True)
     first_name = CharField(
         max_length=COMMON_CHAR_FIELD_MAX_LENGTH,
         **COMMON_BLANK_AND_NULLABLE_FIELD_CONFIG,
@@ -73,6 +75,7 @@ class Address(BaseModel):
     DateTimeField          - created_at,modified_at
     PositiveIntegerField   - pincode
     FK                     - user
+    uuid                   - uuid
     """
 
     tag = CharField(
@@ -112,9 +115,10 @@ class password_reset(BaseModel):
     ********************************  Model Fields ********************************
     pk                  - id
     CharField           - token
-    DateTimeField       - expires_at, created_at
+    DateTimeField       - expires_at, created_at,modified_at
     BooleanField        - used
     ForeignKey          - user
+    uuid                - uuid
     """
 
     token = CharField(max_length=255, unique=True)

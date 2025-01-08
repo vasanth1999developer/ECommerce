@@ -1,7 +1,9 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from rest_framework import serializers
 
 from apps.acess.models.user import Address, User
-from apps.common.serializers import AppCreateModelSerializer, AppReadOnlyModelSerializer
+from apps.common.serializers import AppCreateModelSerializer, AppReadOnlyModelSerializer, AppUpdateModelSerializer
 
 
 def validate_first_name(value):
@@ -67,17 +69,7 @@ class UserCreateSerializer(AppCreateModelSerializer):
         """By this method password hashing is implemented..."""
 
         password = validated_data.pop("password")
-        first_name = validated_data.pop("first_name", None)
-        last_name = validated_data.pop("last_name", None)
-        phone_number = validated_data.pop("phone_number", None)
-        gender = validated_data.pop("gender", None)
         user = User.objects.create_user(password=password, **validated_data)
-        if first_name and last_name and phone_number and gender:
-            user.first_name = first_name
-            user.last_name = last_name
-            user.phone_number = phone_number
-            user.gender = gender
-            user.save()
         return user
 
 
@@ -86,7 +78,7 @@ class UserAddressesRetrive(AppReadOnlyModelSerializer):
 
     class Meta(AppReadOnlyModelSerializer.Meta):
         model = Address
-        fields = "__all__"
+        fields = ("id", "tag", "address", "city", "country", "state", "pincode", "user")
 
 
 class UserRetrieveSerializer(AppReadOnlyModelSerializer):
@@ -99,14 +91,22 @@ class UserRetrieveSerializer(AppReadOnlyModelSerializer):
         fields = ("id", "first_name", "last_name", "email", "phone_number", "gender", "related_addresses", "role")
 
 
-class UserUpdateSerializer(AppCreateModelSerializer):
+class UserListRetrieveSerializer(AppReadOnlyModelSerializer):
+    """This is ListRetrieveSerializer for User model..."""
+
+    class Meta(AppReadOnlyModelSerializer.Meta):
+        model = User
+        fields = ("id", "first_name", "last_name", "email", "phone_number", "gender", "role")
+
+
+class UserUpdateSerializer(AppUpdateModelSerializer):
     """This is update Serializer for User model..."""
 
     gender = serializers.CharField(required=False, allow_blank=True)
     last_name = serializers.CharField(validators=[validate_last_name])
     first_name = serializers.CharField(validators=[validate_first_name])
 
-    class Meta(AppCreateModelSerializer.Meta):
+    class Meta(AppUpdateModelSerializer.Meta):
         model = User
         fields = ("first_name", "last_name", "email", "phone_number", "gender")
 
@@ -115,28 +115,39 @@ class UserUpdateSerializer(AppCreateModelSerializer):
 
         return value.lower()
 
-    def update(self, instance, validated_data):
-        """This update method is ovverrided to update the instance"""
 
-        instance.first_name = validated_data.get("first_name", instance.first_name)
-        instance.last_name = validated_data.get("last_name", instance.last_name)
-        instance.email = validated_data.get("email", instance.email)
-        instance.phone_number = validated_data.get("phone_number", instance.phone_number)
-        instance.gender = validated_data.get("gender", instance.gender)
-        instance.save()
-        return instance
-
-
-class UserRoleUpdateSerializer(AppCreateModelSerializer):
+class UserRoleUpdateSerializer(AppUpdateModelSerializer):
     """This is RoleUpdate Serializer for User model..."""
 
-    class Meta(AppCreateModelSerializer.Meta):
+    class Meta(AppUpdateModelSerializer.Meta):
         model = User
         fields = ("role",)
 
-    def update(self, instance, validated_data):
-        """Override the update method to update the User's role."""
 
-        instance.role = validated_data.get("role", instance.role)
-        instance.save()
-        return instance
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField(required=True)
+    password = serializers.CharField(write_only=True, required=True)
+
+    def validate_email(self, value):
+        """Validate the email format and existence."""
+
+        try:
+            validate_email(value)
+        except ValidationError:
+            raise serializers.ValidationError("Invalid email format...")
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("User with this email does not exist...")
+        return value
+
+    def validate(self, data):
+        """Custom validation for email and password combination."""
+
+        email = data.get("email")
+        password = data.get("password")
+        user = User.objects.filter(email=email).first()
+        if user is None:
+            raise serializers.ValidationError({"email": "User does not exist"})
+        if not user.check_password(password):
+            raise serializers.ValidationError({"password": "Invalid password"})
+        data["user"] = user
+        return data

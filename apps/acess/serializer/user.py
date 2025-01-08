@@ -1,22 +1,27 @@
+from django.contrib.auth.views import PasswordResetView
+from django.http import JsonResponse
+
 from apps.acess.models.user import Address
-from apps.common.serializers import AppCreateModelSerializer
+from apps.common.serializers import AppWriteOnlyModelSerializer
 
 
-class UserAddressSerializer(AppCreateModelSerializer):
+class UserAddressSerializer(AppWriteOnlyModelSerializer):
     """This is CUD Serializer for UserAddress model..."""
 
-    class Meta(AppCreateModelSerializer.Meta):
+    class Meta(AppWriteOnlyModelSerializer.Meta):
         model = Address
         fields = ["id", "tag", "address", "city", "state", "country", "pincode"]
 
-    def update(self, instance, validated_data):
-        """Update an existing Address instance with validated data."""
 
-        instance.tag = validated_data.get("tag", instance.tag)
-        instance.address = validated_data.get("address", instance.address)
-        instance.city = validated_data.get("city", instance.city)
-        instance.state = validated_data.get("state", instance.state)
-        instance.country = validated_data.get("country", instance.country)
-        instance.pincode = validated_data.get("pincode", instance.pincode)
-        instance.save()
-        return instance
+class CustomPasswordResetView(PasswordResetView):
+    """Custom password reset"""
+
+    def form_valid(self, form):
+        """return True if password reset is valid"""
+
+        form.save(
+            request=self.request,
+            use_https=self.request.is_secure(),
+            email_template_name="registration/password_reset_email.html",
+        )
+        return JsonResponse({"detail": "Password reset e-mail has been sent."})

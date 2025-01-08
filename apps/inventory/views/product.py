@@ -1,14 +1,15 @@
-from rest_framework.exceptions import PermissionDenied
-
 from apps.acess.choices import RoleTypeChoices
+from apps.common.permission_class import RoleBasedPermission
 from apps.common.views.api.generic import AppModelCUDAPIViewSet, AppModelListAPIViewSet, AppModelRetrieveAPIViewSet
 from apps.inventory.models.product import Image, Offer, Product, Specification
+from apps.inventory.models.salesorder import RatingReview
 from apps.inventory.serializer.product import (
     ImageReadSerializer,
     ProducImageSerializer,
     ProductReadSerializer,
     ProductSpecificationSerializer,
     ProductWriteSerializer,
+    RatingReviewSerializer,
     SpecificationRetriveSerializer,
     SpecificationSerializer,
     productOfferWriteSerializer,
@@ -18,172 +19,87 @@ from apps.inventory.serializer.product import (
 class ProductCUDViewSet(AppModelCUDAPIViewSet):
     """Api viewset to create, update & delete products"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin]
     serializer_class = ProductWriteSerializer
-
-    def create(self, request, *args, **kwargs):
-        """Overridden to create function..."""
-
-        user = self.get_user()
-        if user.role == RoleTypeChoices.admin:
-            return super().create(request, *args, **kwargs)
-        raise PermissionDenied("You do not have permission to view this content.")
-
-    def get_queryset(self):
-        """Override get_queryset()..."""
-
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return Product.objects.filter(is_deleted=False)
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
+    queryset = Product.objects.filter(is_deleted=False)
 
 
 class RetriveProductListViewSet(AppModelListAPIViewSet):
     """Api viewset to retrieve product details"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin]
     serializer_class = ProductReadSerializer
-
-    def get_queryset(self):
-        """Override get_queryset()..."""
-
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return Product.objects.filter()
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
-
-
-class RetriveProductListForBuyersViewSet(AppModelListAPIViewSet):
-    """Api viewset to retrieve product details for buyers with filters, search and sort"""
-
-    serializer_class = ProductReadSerializer
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(is_deleted=False)
     search_fields = ["name", "description", "sub_category__name"]
     filterset_fields = ["sub_category__name", "final_price", "discount", "available_stock"]
-    ordering_fields = ["name", "final_price", "discount", "available_stock"]
+    ordering_fields = ["final_price", "discount", "available_stock"]
     ordering = ["name"]
 
 
 class RetriveProductViewSet(AppModelRetrieveAPIViewSet):
     """Api viewset to retrieve product details"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin, RoleTypeChoices.member]
     serializer_class = ProductReadSerializer
-
-    def get_queryset(self):
-        """Override get_queryset()..."""
-
-        user = self.request.user
-        allowed_roles = [RoleTypeChoices.admin, RoleTypeChoices.member]
-        if user.role in allowed_roles:
-            return Product.objects.filter()
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
+    queryset = Product.objects.filter(is_deleted=False)
 
 
 class ProductImageCUDViewSet(AppModelCUDAPIViewSet):
     """Api viewset to create, update & delete product images"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin]
     serializer_class = ProducImageSerializer
+    queryset = Image.objects.all()
 
     def create(self, request, *args, **kwargs):
         """Overridden the create method"""
 
-        user = self.get_user()
-        allowed_roles = [RoleTypeChoices.admin]
-        if user.role in allowed_roles:
-            product_id = request.data.get("product")
-            images = request.FILES.getlist("image")
-            product = Product.objects.get(id=product_id)
-            for image in images:
-                Image.objects.create(product=product, image=image)
-            return self.send_response(data="Image saves successfully...")
-        raise PermissionDenied("You do not have permission to create a category.")
-
-    def get_queryset(self):
-        """Override get_queryset()"""
-
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return Image.objects.all()
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
+        product_id = request.data.get("product")
+        images = request.FILES.getlist("image")
+        product = Product.objects.get(id=product_id)
+        for image in images:
+            Image.objects.create(product=product, image=image)
+        return self.send_response(data="Image saves successfully...")
 
 
 class ProductImageListReviewViewSet(AppModelListAPIViewSet):
     """Api viewset to retrieve product images"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin]
     serializer_class = ImageReadSerializer
-
-    def get_queryset(self):
-        """Override get_queryset()"""
-
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return Image.objects.all()
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
+    queryset = Image.objects.all()
 
 
 class ProductImageReviewViewSet(AppModelRetrieveAPIViewSet):
     """Api viewset to retrieve product image"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin]
     serializer_class = ImageReadSerializer
-
-    def get_queryset(self):
-        """return image based on id"""
-
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return Image.objects.all()
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
+    queryset = Image.objects.all()
 
 
 class ProductOffersCUDViewSet(AppModelCUDAPIViewSet):
     """Api viewset to create, update & delete product offers"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin]
     serializer_class = productOfferWriteSerializer
-
-    def create(self, request, *args, **kwargs):
-        """Overridden to create function"""
-
-        user = self.get_user()
-        if user.role == RoleTypeChoices.admin:
-            return super().create(request, *args, **kwargs)
-        raise PermissionDenied("You do not have permission to create a category.")
-
-    def get_queryset(self):
-        """Override get_queryset()..."""
-
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return Offer.objects.all()
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
+    queryset = Offer.objects.all()
 
 
 class SpecificationCUDViewSet(AppModelCUDAPIViewSet):
     """Api viewset to create, update & delete specifications"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin]
     serializer_class = SpecificationSerializer
-
-    def create(self, request, *args, **kwargs):
-        """Override create()..."""
-
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return super().create(request, *args, **kwargs)
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
-
-    def get_queryset(self):
-        """Override get_queryset()..."""
-
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return Specification.objects.all()
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
+    queryset = Specification.objects.all()
 
 
 class SpecificationListViewSet(AppModelListAPIViewSet):
@@ -194,6 +110,7 @@ class SpecificationListViewSet(AppModelListAPIViewSet):
 
     def get_queryset(self):
         """Override get_queryset()..."""
+
         user = self.request.user
         if user.role != RoleTypeChoices.admin:
             return self.queryset.none()
@@ -206,13 +123,18 @@ class SpecificationListViewSet(AppModelListAPIViewSet):
 class ProductSpecificationCUDApiViewSet(AppModelCUDAPIViewSet):
     """Api viewset to create, update & delete product specifications"""
 
+    permission_classes = [RoleBasedPermission]
+    RoleBasedPermission.allowed_roles = [RoleTypeChoices.admin]
     serializer_class = ProductSpecificationSerializer
 
-    def create(self, request, *args, **kwargs):
-        """Override create()"""
 
-        user = self.request.user
-        if user.role == RoleTypeChoices.admin:
-            return super().create(request, *args, **kwargs)
-        else:
-            raise PermissionDenied("You do not have permission to view this content.")
+class RatingReviewViewSet(AppModelCUDAPIViewSet):
+    """ViewSet for Rating and Review"""
+
+    queryset = RatingReview.objects.all()
+    serializer_class = RatingReviewSerializer
+
+    def perform_create(self, serializer):
+        """Assign the current user to the review during creation."""
+
+        serializer.save(user=self.get_user())

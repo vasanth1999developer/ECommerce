@@ -18,7 +18,8 @@ env.read_env(str(BASE_DIR / ".env"))
 # ------------------------------------------------------------------------------
 DEBUG = True
 SECRET_KEY = env("DJANGO_SECRET_KEY")
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = ["127.0.0.1", "6858-2401-4900-884c-dc56-f03f-533f-3b9-a8e6.ngrok-free.app"]
+
 
 # Timezone & Localization
 # ------------------------------------------------------------------------------
@@ -105,7 +106,11 @@ DATABASES = {
 ADMIN_URL = env.str("DJANGO_ADMIN_URL", default="django-admin/")
 ADMINS = [("""Jeevan""", "jeevan.jeevu94@gmail.com")]
 MANAGERS = ADMINS
-CSRF_TRUSTED_ORIGINS = ["https://*.techademyb2b.site/", "https://*.127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.techademyb2b.site/",
+    "https://*.127.0.0.1",
+    "https://6858-2401-4900-884c-dc56-f03f-533f-3b9-a8e6.ngrok-free.app",
+]
 
 # App Super Admin
 # ------------------------------------------------------------------------------
@@ -300,18 +305,26 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 # EMAIL
 # ------------------------------------------------------------------------------
-EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
-EMAIL_SENDER_ADDRESS = env.str("EMAIL_SENDER_ADDRESS", default="noreply@example.com")
-EMAIL_SENDER_NAME = env.str("EMAIL_SENDER_NAME", default="App")
-EMAIL_SUBJECT_PREFIX = env.str("DJANGO_EMAIL_SUBJECT_PREFIX", default=f"[{EMAIL_SENDER_NAME}]")
-EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
-DEFAULT_FROM_EMAIL = f"'{EMAIL_SENDER_NAME}' <{EMAIL_SENDER_ADDRESS}>"
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-EMAIL_TIMEOUT = 5
-ANYMAIL = {
-    "SENDGRID_API_KEY": env("SENDGRID_API_KEY"),
-    "SENDGRID_API_URL": env("SENDGRID_API_URL", default="https://api.sendgrid.com/v3/"),
-}
+# EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+# EMAIL_SENDER_ADDRESS = env.str("EMAIL_SENDER_ADDRESS", default="noreply@example.com")
+# EMAIL_SENDER_NAME = env.str("EMAIL_SENDER_NAME", default="App")
+# EMAIL_SUBJECT_PREFIX = env.str("DJANGO_EMAIL_SUBJECT_PREFIX", default=f"[{EMAIL_SENDER_NAME}]")
+# EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+# DEFAULT_FROM_EMAIL = f"'{EMAIL_SENDER_NAME}' <{EMAIL_SENDER_ADDRESS}>"
+# SERVER_EMAIL = DEFAULT_FROM_EMAIL
+# EMAIL_TIMEOUT = 5
+# ANYMAIL = {
+#     "SENDGRID_API_KEY": env("SENDGRID_API_KEY"),
+#     "SENDGRID_API_URL": env("SENDGRID_API_URL", default="https://api.sendgrid.com/v3/"),
+# }
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "vasanth.techymeet@gmail.com"
+EMAIL_HOST_PASSWORD = "geof fbin aszr iyzk"
 
 # Default Overrides
 # ------------------------------------------------------------------------------
@@ -325,8 +338,8 @@ APP_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 # Payment Gateway
 # ------------------------------------------------------------------------------
-RAZORPAY_KEY_ID = env.str("RAZORPAY_KEY_ID", default="")
-RAZORPAY_KEY_SECRET = env.str("RAZORPAY_KEY_SECRET", default="")
+STRIPE_PUBLISHABLE_KEY = env.str("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
 
 # Azure & Services
 # ------------------------------------------------------------------------------
@@ -388,3 +401,8 @@ LOGGING = {
 # SSL_CONFIG
 # ------------------------------------------------------------------------------
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+RAZORPAY_KEY_ID = env.str("RAZORPAY_KEY_ID")
+RAZORPAY_SECRET_KEY = env.str("RAZORPAY_SECRET_KEY")
+RAZORPAY_WEBHOOK_SECRET = "Tn48aj9047@"

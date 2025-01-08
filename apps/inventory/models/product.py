@@ -15,7 +15,9 @@ class Product(BaseCreationModel, SoftDeleteModel):
     DecimalField        - price, final_price, discount
     BooleanField        - is_stock_available
     IntegerField        - available_stock
-    FK                  - sub_category
+    FK                  - sub_category, created_by
+    Unique               - uuid
+    Datetime             - created_at, modified_at
     """
 
     name = CharField(max_length=COMMON_CHAR_FIELD_MAX_LENGTH)
@@ -37,7 +39,9 @@ class Specification(BaseCreationModel):
     ********************************  Model Fields ********************************
     pk                  - id
     charField           - key
-    FK                  - sub_category
+    FK                  - sub_category, created_by
+    Unique               - uuid
+    Datetime             - created_at, modified_at
     """
 
     sub_category = ForeignKey(to=SubCategory, on_delete=CASCADE)
@@ -53,7 +57,9 @@ class ProductSpecification(BaseCreationModel):
     ********************************  Model Fields ********************************
     pk                  - id
     charField           - value
-    FK                  - product, specification
+    FK                  - product, specification, created_by
+    Unique               - uuid
+    Datetime             - created_at, modified_at
     """
 
     product = ForeignKey(Product, on_delete=CASCADE)
@@ -70,7 +76,9 @@ class Image(BaseCreationModel, AppImageModel):
     ********************************  Model Fields ********************************
     pk                  - id
     ImageField          - image
-    FK                  - product
+    FK                  - product, created_by
+    Unique               - uuid
+    Datetime             - created_at, modified_at
     """
 
     product = ForeignKey(to=Product, on_delete=CASCADE)
@@ -84,8 +92,10 @@ class Offer(BaseCreationModel):
     ********************************  Model Fields ********************************
     pk                  - id
     CharField           - type
-    FK                  - product
+    FK                  - product, created_by
     TextField           - offer_description
+    Unique              - uuid
+    Datetime            - created_at, modified_at
     """
 
     type = CharField(

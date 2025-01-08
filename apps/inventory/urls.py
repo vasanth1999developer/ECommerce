@@ -14,7 +14,7 @@ from apps.inventory.views.product import (
     ProductImageReviewViewSet,
     ProductOffersCUDViewSet,
     ProductSpecificationCUDApiViewSet,
-    RetriveProductListForBuyersViewSet,
+    RatingReviewViewSet,
     RetriveProductListViewSet,
     RetriveProductViewSet,
     SpecificationCUDViewSet,
@@ -22,9 +22,12 @@ from apps.inventory.views.product import (
 )
 from apps.inventory.views.salesorder import (
     AddProductWishListCUDViewSet,
+    CartRetriveForUserViewSet,
     MoveWishListToCartView,
+    OrderCUDApiViewSet,
     UserWishListRetrieveViewSet,
 )
+from apps.inventory.views.webhook import razorpay_webhook
 
 API_URL_PREFIX = "v1/inventory/"
 
@@ -46,9 +49,6 @@ router.register(f"{API_URL_PREFIX}get-product", RetriveProductViewSet, basename=
 router.register(f"{API_URL_PREFIX}get-product-images", ProductImageReviewViewSet, basename="get-product-images")
 router.register(f"{API_URL_PREFIX}get-images", ProductImageListReviewViewSet, basename="get-images")
 
-# product buyers API
-router.register(f"{API_URL_PREFIX}product-buyers", RetriveProductListForBuyersViewSet, basename="product-buyers")
-
 # Offer API
 router.register(f"{API_URL_PREFIX}offers", ProductOffersCUDViewSet, basename="offer")
 
@@ -63,6 +63,15 @@ router.register(
 # Wishlist API
 router.register(f"{API_URL_PREFIX}wishlist-list", UserWishListRetrieveViewSet, basename="wishlist-list")
 
+# Cart API
+router.register(f"{API_URL_PREFIX}cart-list", CartRetriveForUserViewSet, basename="cart-list")
+
+# Order API
+router.register(f"{API_URL_PREFIX}orders", OrderCUDApiViewSet, basename="order")
+
+# rating API
+router.register(f"{API_URL_PREFIX}rating-reviews", RatingReviewViewSet, basename="rating-review")
+
 urlpatterns = [
     path(
         f"{API_URL_PREFIX}get-specifications/",
@@ -70,7 +79,7 @@ urlpatterns = [
         name="specifications_list",
     ),
     path(
-        f"{API_URL_PREFIX}wishlist/<int: product_id>/",
+        f"{API_URL_PREFIX}wishlist/<int:product_id>/",
         AddProductWishListCUDViewSet.as_view(
             {
                 "post": "create",
@@ -79,4 +88,5 @@ urlpatterns = [
         ),
     ),
     path(f"{API_URL_PREFIX}add-to-cart", MoveWishListToCartView.as_view(), name="add-to-cart"),
+    path("razorpay/webhook/", razorpay_webhook, name="razorpay_webhook"),
 ] + router.urls
