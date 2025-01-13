@@ -77,7 +77,7 @@ class ProductSpecificationNameSerializer(AppReadOnlyModelSerializer):
 
     related_Specification = SpecificationkeyretriveSerializer(many=True, read_only=True)
 
-    class Meta(AppWriteOnlyModelSerializer.Meta):
+    class Meta(AppReadOnlyModelSerializer.Meta):
         model = ProductSpecification
         fields = ("related_Specification", "value")
 

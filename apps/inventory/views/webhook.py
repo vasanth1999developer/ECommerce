@@ -34,11 +34,13 @@ def razorpay_webhook(request):
                     status="SUCCESS",
                     amount=payment_entity["amount"] / 100,
                 )
-                pdf_path = generate_invoice_pdf(order)
-                Invoice.objects.create(order=order, pdf_path=pdf_path)
-                send_email_notification(order.user.email, pdf_path)
+
                 cart = Cart.objects.get(user_id=user_id, is_active=True)
                 cart_items = CartItem.objects.filter(cart=cart)
+                pdf_path = generate_invoice_pdf(order, cart_items)
+                Invoice.objects.create(order=order, pdf_path=pdf_path)
+                send_email_notification(order.user.email, pdf_path)
+
                 order_items = []
                 for cart_item in cart_items:
                     order_item = OrderItem.objects.create(

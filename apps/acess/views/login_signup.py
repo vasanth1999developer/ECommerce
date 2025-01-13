@@ -116,7 +116,7 @@ class PasswordResetRequestView(NonAuthenticatedAPIMixin, AppAPIView):
         token = str(uuid.uuid4())
         expires_at = now() + timedelta(hours=1)
         password_reset.objects.create(user=user, token=token, expires_at=expires_at)
-        reset_url = f"http://127.0.0.1:8000/password-reset/confirm/{token}"
+        reset_url = f"https://127.0.0.1:8000/password-reset/confirm/{token}"
         send_mail(
             subject="Password Reset Request",
             message=f"Click the link to reset your password: {reset_url}",

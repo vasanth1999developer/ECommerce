@@ -22,8 +22,8 @@ class WishList(BaseCreationModel):
     ********************************  Model Fields ********************************
     pk                  - id
     FK                  - user, product, created_by
-    Unique               - uuid
-    Datetime             - created_at, modified_at
+    Unique              - uuid
+    Datetime            - created_at, modified_at
     """
 
     user = ForeignKey(to=User, on_delete=CASCADE)
@@ -39,8 +39,8 @@ class Cart(BaseCreationModel):
     pk                  - id
     FK                  - user, created_by
     BooleanField        - is_active
-    Unique               - uuid
-    Datetime             - created_at, modified_at
+    Unique              - uuid
+    Datetime            - created_at, modified_at
     """
 
     user = OneToOneField(to=User, on_delete=CASCADE)

@@ -111,10 +111,10 @@ class SpecificationListViewSet(AppModelListAPIViewSet):
     def get_queryset(self):
         """Override get_queryset()..."""
 
-        user = self.request.user
+        user = self.get_user()
         if user.role != RoleTypeChoices.admin:
             return self.queryset.none()
-        sub_category_id = self.request.query_params.get("sub_category_id")
+        sub_category_id = self.get_request().query_params.get("sub_category_id")
         if sub_category_id:
             return self.queryset.filter(sub_category_id=sub_category_id)
         return self.queryset.none()

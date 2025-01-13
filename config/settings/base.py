@@ -18,7 +18,7 @@ env.read_env(str(BASE_DIR / ".env"))
 # ------------------------------------------------------------------------------
 DEBUG = True
 SECRET_KEY = env("DJANGO_SECRET_KEY")
-ALLOWED_HOSTS = ["127.0.0.1", "6858-2401-4900-884c-dc56-f03f-533f-3b9-a8e6.ngrok-free.app"]
+ALLOWED_HOSTS = ["127.0.0.1", "ade4-2401-4900-1cd1-6280-3457-137c-64f-df9b.ngrok-free.app"]
 
 
 # Timezone & Localization
@@ -109,7 +109,7 @@ MANAGERS = ADMINS
 CSRF_TRUSTED_ORIGINS = [
     "https://*.techademyb2b.site/",
     "https://*.127.0.0.1",
-    "https://6858-2401-4900-884c-dc56-f03f-533f-3b9-a8e6.ngrok-free.app",
+    "https://ade4-2401-4900-1cd1-6280-3457-137c-64f-df9b.ngrok-free.app",
 ]
 
 # App Super Admin
@@ -144,7 +144,7 @@ APPEND_SLASH = True
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [str(APPS_DIR / "templates")],
+        "DIRS": [str(APPS_DIR / "common" / "templates")],
         "OPTIONS": {
             "loaders": [
                 "django.template.loaders.filesystem.Loader",

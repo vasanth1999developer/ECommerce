@@ -24,7 +24,9 @@ class WishListRetriveSerializer(AppReadOnlyModelSerializer):
 class CartItemSerializer(AppReadOnlyModelSerializer):
     """CartItem model serializer holds read only fields."""
 
-    class Meta:
+    product = ProductReadSerializer(read_only=True)
+
+    class Meta(AppReadOnlyModelSerializer.Meta):
         model = CartItem
         fields = ["id", "product", "quantity", "price", "discount", "final_price"]
 
@@ -34,7 +36,7 @@ class CartSerializer(AppReadOnlyModelSerializer):
 
     related_cart_items = CartItemSerializer(many=True, read_only=True)
 
-    class Meta:
+    class Meta(AppReadOnlyModelSerializer.Meta):
         model = Cart
         fields = [
             "id",
@@ -62,7 +64,7 @@ class CartSerializer(AppReadOnlyModelSerializer):
 class OrderSerializer(AppWriteOnlyModelSerializer):
     """OrderSerializer class holds write only fields"""
 
-    class Meta:
+    class Meta(AppWriteOnlyModelSerializer.Meta):
         model = Order
         fields = ["id", "user", "cart", "total_price", "total_discount", "delivery_charges", "payment_status"]
 
@@ -70,7 +72,7 @@ class OrderSerializer(AppWriteOnlyModelSerializer):
 class PaymentSerializer(AppWriteOnlyModelSerializer):
     """Payment serializer class write only fields"""
 
-    class Meta:
+    class Meta(AppWriteOnlyModelSerializer.Meta):
         model = Payment
         fields = ["id", "order", "payment_id", "status", "amount", "created_at"]
 
@@ -78,6 +80,6 @@ class PaymentSerializer(AppWriteOnlyModelSerializer):
 class InvoiceSerializer(AppWriteOnlyModelSerializer):
     """Invoice serializer for write-only fields"""
 
-    class Meta:
+    class Meta(AppWriteOnlyModelSerializer.Meta):
         model = Invoice
         fields = ["id", "order", "pdf_path", "created_at"]

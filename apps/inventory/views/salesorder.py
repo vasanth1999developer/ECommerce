@@ -69,7 +69,7 @@ class MoveWishListToCartView(AppAPIView):
     def post(self, request):
         """Create function to convert product in wishlist to cart"""
 
-        user = request.user
+        user = self.get_user()
         product_id = request.data.get("product_id")
         product = Product.objects.filter(id=product_id).first()
         wishlist_item = get_object_or_404(WishList, user=user, product=product)

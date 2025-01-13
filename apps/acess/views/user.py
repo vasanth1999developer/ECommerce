@@ -62,4 +62,4 @@ class UserAddressCUDApiViewSet(AppModelCUDAPIViewSet):
     def perform_create(self, serializer):
         """Set the `user` field to the currently logged-in user"""
 
-        serializer.save(user=self.request.user)
+        serializer.save(user=self.get_user())

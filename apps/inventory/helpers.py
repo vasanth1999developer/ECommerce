@@ -1,24 +1,23 @@
 import os
 
 from django.core.mail import EmailMessage
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 
-def generate_invoice_pdf(order):
-    """To generate invoice"""
+def generate_invoice_pdf(order, cart_items):
+    """To generate invoice as a PDF using an HTML template"""
 
     pdf_path = f"invoices/order_{order.id}.pdf"
-    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)  # Ensure directory exists
-    c = canvas.Canvas(pdf_path, pagesize=letter)
-    c.setFont("Helvetica", 12)
-    c.drawString(100, 750, "Invoice")
-    c.drawString(100, 735, f"Order ID: {order.id}")
-    c.drawString(100, 720, f"Customer: {order.user.username}")
-    c.drawString(100, 705, f"Total Price: ${order.total_price:.2f}")
-    c.drawString(100, 690, f"Payment Status: {order.payment_status}")
-    c.drawString(100, 100, "Thank you for your purchase!")
-    c.save()
+    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
+
+    context = {
+        "order": order,
+        "cart_items": cart_items,
+    }
+    html_string = render_to_string("invoice_template.html", context)
+
+    HTML(string=html_string).write_pdf(pdf_path)
     return pdf_path
 
 
