@@ -18,7 +18,7 @@ env.read_env(str(BASE_DIR / ".env"))
 # ------------------------------------------------------------------------------
 DEBUG = True
 SECRET_KEY = env("DJANGO_SECRET_KEY")
-ALLOWED_HOSTS = ["127.0.0.1", "ade4-2401-4900-1cd1-6280-3457-137c-64f-df9b.ngrok-free.app"]
+ALLOWED_HOSTS = ["127.0.0.1", "ebbe-2401-4900-1cd1-6280-1d51-67c1-e441-1e0d.ngrok-free.app"]
 
 
 # Timezone & Localization
@@ -109,7 +109,7 @@ MANAGERS = ADMINS
 CSRF_TRUSTED_ORIGINS = [
     "https://*.techademyb2b.site/",
     "https://*.127.0.0.1",
-    "https://ade4-2401-4900-1cd1-6280-3457-137c-64f-df9b.ngrok-free.app",
+    "https://ebbe-2401-4900-1cd1-6280-1d51-67c1-e441-1e0d.ngrok-free.app",
 ]
 
 # App Super Admin

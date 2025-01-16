@@ -22,6 +22,7 @@ from apps.inventory.views.product import (
 )
 from apps.inventory.views.salesorder import (
     AddProductWishListCUDViewSet,
+    CartOfferSelectingViewSet,
     CartRetriveForUserViewSet,
     MoveWishListToCartView,
     OrderCUDApiViewSet,
@@ -65,6 +66,7 @@ router.register(f"{API_URL_PREFIX}wishlist-list", UserWishListRetrieveViewSet, b
 
 # Cart API
 router.register(f"{API_URL_PREFIX}cart-list", CartRetriveForUserViewSet, basename="cart-list")
+router.register(f"{API_URL_PREFIX}update-cart-items-offer", CartOfferSelectingViewSet, basename="update-offer")
 
 # Order API
 router.register(f"{API_URL_PREFIX}orders", OrderCUDApiViewSet, basename="order")

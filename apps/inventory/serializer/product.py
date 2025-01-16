@@ -53,7 +53,7 @@ class ProductOfferReadSerializer(AppReadOnlyModelSerializer):
 
     class Meta(AppReadOnlyModelSerializer.Meta):
         model = Offer
-        fields = ["id", "type", "offer_description", "product"]
+        fields = ["id", "type", "offer_description", "product", "terms_and_conditions", "discount_value"]
 
 
 class SpecificationRetriveSerializer(AppReadOnlyModelSerializer):
@@ -114,7 +114,7 @@ class productOfferWriteSerializer(AppWriteOnlyModelSerializer):
 
     class Meta(AppWriteOnlyModelSerializer.Meta):
         model = Offer
-        fields = ["type", "offer_description", "product"]
+        fields = ["type", "offer_description", "product", "terms_and_conditions", "discount_value"]
 
 
 class SpecificationSerializer(AppWriteOnlyModelSerializer):

@@ -14,7 +14,7 @@ from django.db.models import (
 from apps.acess.choices import PaymentStatusChoice, RatingChoice
 from apps.acess.models.user import Address, User
 from apps.common.models.base import COMMON_CHAR_FIELD_MAX_LENGTH, BaseCreationModel
-from apps.inventory.models.product import Product
+from apps.inventory.models.product import Offer, Product
 
 
 class WishList(BaseCreationModel):
@@ -67,6 +67,7 @@ class CartItem(BaseCreationModel):
     price = DecimalField(max_digits=10, decimal_places=2, default=0.00)
     discount = DecimalField(max_digits=10, decimal_places=2, default=0.00)
     final_price = DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    selected_offer = ForeignKey(to=Offer, on_delete=CASCADE, null=True)
 
     class Meta(BaseCreationModel.Meta):
         default_related_name = "related_cart_items"

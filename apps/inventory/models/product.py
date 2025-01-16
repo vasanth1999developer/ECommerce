@@ -1,7 +1,13 @@
 from django.db.models import CASCADE, BooleanField, CharField, DecimalField, ForeignKey, IntegerField, TextField
 
 from apps.acess.choices import OfferChoice
-from apps.common.models.base import COMMON_CHAR_FIELD_MAX_LENGTH, AppImageModel, BaseCreationModel, SoftDeleteModel
+from apps.common.models.base import (
+    COMMON_BLANK_AND_NULLABLE_FIELD_CONFIG,
+    COMMON_CHAR_FIELD_MAX_LENGTH,
+    AppImageModel,
+    BaseCreationModel,
+    SoftDeleteModel,
+)
 from apps.inventory.models.category import SubCategory
 
 
@@ -105,6 +111,8 @@ class Offer(BaseCreationModel):
     )
     offer_description = TextField(max_length=COMMON_CHAR_FIELD_MAX_LENGTH)
     product = ForeignKey(to=Product, on_delete=CASCADE)
+    terms_and_conditions = TextField(max_length=COMMON_CHAR_FIELD_MAX_LENGTH, **COMMON_BLANK_AND_NULLABLE_FIELD_CONFIG)
+    discount_value = DecimalField(max_digits=10, decimal_places=2, **COMMON_BLANK_AND_NULLABLE_FIELD_CONFIG)
 
     class Meta(BaseCreationModel.Meta):
         default_related_name = "related_offers"

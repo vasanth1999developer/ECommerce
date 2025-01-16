@@ -7,10 +7,11 @@ from rest_framework import status
 
 from apps.acess.models.user import Address
 from apps.common.views.api.base import AppAPIView
-from apps.common.views.api.generic import AppModelCUDAPIViewSet, AppModelListAPIViewSet
-from apps.inventory.models.product import Product
+from apps.common.views.api.generic import AppModelCUDAPIViewSet, AppModelListAPIViewSet, AppModelUpdateAPIViewSet
+from apps.inventory.models.product import Offer, Product
 from apps.inventory.models.salesorder import Cart, CartItem, Order, WishList
 from apps.inventory.serializer.salesorder import (
+    CartItemWriteSerializer,
     CartSerializer,
     OrderSerializer,
     WishlistCUDSerializer,
@@ -102,6 +103,29 @@ class CartRetriveForUserViewSet(AppModelListAPIViewSet):
 
         user = self.get_user()
         return Cart.objects.filter(user=user)
+
+
+class CartOfferSelectingViewSet(AppModelUpdateAPIViewSet):
+    """This query view is used to update the selected offers for the product by the user"""
+
+    serializer_class = CartItemWriteSerializer
+    queryset = CartItem.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        """This method is called to perform an update"""
+
+        selected_offer = request.data.get("selected_offer")
+        product_id = request.data.get("product")
+        offer = Offer.objects.filter(pk=selected_offer, product=product_id).first()
+        if not offer:
+            return self.send_error_response(data={"Offer not found for selected product"})
+        cart_item = self.get_object()
+        discount_value = float(offer.discount_value)
+        original_price = float(cart_item.final_price)
+        final_price = original_price - (original_price * (discount_value / 100))
+        cart_item.final_price = final_price
+        cart_item.save()
+        return super().update(request, *args, **kwargs)
 
 
 class OrderCUDApiViewSet(AppModelCUDAPIViewSet):

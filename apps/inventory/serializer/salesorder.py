@@ -28,7 +28,7 @@ class CartItemSerializer(AppReadOnlyModelSerializer):
 
     class Meta(AppReadOnlyModelSerializer.Meta):
         model = CartItem
-        fields = ["id", "product", "quantity", "price", "discount", "final_price"]
+        fields = ["id", "product", "quantity", "price", "discount", "final_price", "selected_offer"]
 
 
 class CartSerializer(AppReadOnlyModelSerializer):
@@ -83,3 +83,12 @@ class InvoiceSerializer(AppWriteOnlyModelSerializer):
     class Meta(AppWriteOnlyModelSerializer.Meta):
         model = Invoice
         fields = ["id", "order", "pdf_path", "created_at"]
+
+
+class CartItemWriteSerializer(AppWriteOnlyModelSerializer):
+    """CartItem model serializer holds write only fields."""
+
+    class Meta(AppWriteOnlyModelSerializer.Meta):
+        model = CartItem
+        fields = ["selected_offer", "final_price"]
+        read_only_fields = ["final_price"]
