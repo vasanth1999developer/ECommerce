@@ -64,9 +64,11 @@ class ListUniqueValidator:
                     if counter[item.get(field_name)] > 1:
                         error.update(
                             {
-                                field_name: self.message[field_name]
-                                if field_name in self.message.keys()
-                                else self.message["default"]
+                                field_name: (
+                                    self.message[field_name]
+                                    if field_name in self.message.keys()
+                                    else self.message["default"]
+                                )
                             }
                         )
                 errors.append(error)

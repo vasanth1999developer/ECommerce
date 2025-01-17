@@ -1,3 +1,4 @@
+from django.contrib.auth.models import BaseUserManager
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist, ValidationError
 from django.db.models import QuerySet
 from django.utils import timezone
@@ -157,3 +158,20 @@ class ArchivableObjectManagerQuerySet(SoftDeleteObjectManagerQuerySet):
         """
 
         return super().update(is_deleted=True, is_active=False, deleted_at=timezone.now())
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email=None, password=None, **kwargs):
+        """
+        Creates and saves a User with the given email, date of
+        birth and password...
+        """
+
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        user = self.model(email=self.normalize_email(email), **kwargs)
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user

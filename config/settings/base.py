@@ -18,7 +18,8 @@ env.read_env(str(BASE_DIR / ".env"))
 # ------------------------------------------------------------------------------
 DEBUG = True
 SECRET_KEY = env("DJANGO_SECRET_KEY")
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = ["127.0.0.1", "ebbe-2401-4900-1cd1-6280-1d51-67c1-e441-1e0d.ngrok-free.app"]
+
 
 # Timezone & Localization
 # ------------------------------------------------------------------------------
@@ -60,6 +61,8 @@ THIRD_PARTY_APPS = [
 
 CUSTOM_APPS = [
     "apps.common",
+    "apps.acess",
+    "apps.inventory",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
@@ -103,7 +106,11 @@ DATABASES = {
 ADMIN_URL = env.str("DJANGO_ADMIN_URL", default="django-admin/")
 ADMINS = [("""Jeevan""", "jeevan.jeevu94@gmail.com")]
 MANAGERS = ADMINS
-CSRF_TRUSTED_ORIGINS = ["https://*.techademyb2b.site/", "https://*.127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.techademyb2b.site/",
+    "https://*.127.0.0.1",
+    "https://ebbe-2401-4900-1cd1-6280-1d51-67c1-e441-1e0d.ngrok-free.app",
+]
 
 # App Super Admin
 # ------------------------------------------------------------------------------
@@ -137,7 +144,7 @@ APPEND_SLASH = True
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [str(APPS_DIR / "templates")],
+        "DIRS": [str(APPS_DIR / "common" / "templates")],
         "OPTIONS": {
             "loaders": [
                 "django.template.loaders.filesystem.Loader",
@@ -186,13 +193,13 @@ else:
             "BACKEND": "apps.common.storages.MediaRootAzureStorage",
         },
     }
-MEDIA_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/media/"
+MEDIA_URL = f"https: //{AZURE_ACCOUNT_NAME}.blob.core.windows.net/media/"
 MEDIA_ROOT = str(APPS_DIR / "media")
 TEMP_ROOT = f"{MEDIA_ROOT}/temp"
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
-AUTH_USER_MODEL = "access.User"  # custom app user model
+AUTH_USER_MODEL = "acess.User"  # custom app user model
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
@@ -221,7 +228,11 @@ X_FRAME_OPTIONS = "DENY"
 # ------------------------------------------------------------------------------
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = [*default_headers, "domain", "idp-token",]
+CORS_ALLOW_HEADERS = [
+    *default_headers,
+    "domain",
+    "idp-token",
+]
 
 # Api & Rest Framework
 # ------------------------------------------------------------------------------
@@ -294,18 +305,26 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 # EMAIL
 # ------------------------------------------------------------------------------
-EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
-EMAIL_SENDER_ADDRESS = env.str("EMAIL_SENDER_ADDRESS", default="noreply@example.com")
-EMAIL_SENDER_NAME = env.str("EMAIL_SENDER_NAME", default="App")
-EMAIL_SUBJECT_PREFIX = env.str("DJANGO_EMAIL_SUBJECT_PREFIX", default=f"[{EMAIL_SENDER_NAME}]")
-EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
-DEFAULT_FROM_EMAIL = f"'{EMAIL_SENDER_NAME}' <{EMAIL_SENDER_ADDRESS}>"
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-EMAIL_TIMEOUT = 5
-ANYMAIL = {
-    "SENDGRID_API_KEY": env("SENDGRID_API_KEY"),
-    "SENDGRID_API_URL": env("SENDGRID_API_URL", default="https://api.sendgrid.com/v3/"),
-}
+# EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+# EMAIL_SENDER_ADDRESS = env.str("EMAIL_SENDER_ADDRESS", default="noreply@example.com")
+# EMAIL_SENDER_NAME = env.str("EMAIL_SENDER_NAME", default="App")
+# EMAIL_SUBJECT_PREFIX = env.str("DJANGO_EMAIL_SUBJECT_PREFIX", default=f"[{EMAIL_SENDER_NAME}]")
+# EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+# DEFAULT_FROM_EMAIL = f"'{EMAIL_SENDER_NAME}' <{EMAIL_SENDER_ADDRESS}>"
+# SERVER_EMAIL = DEFAULT_FROM_EMAIL
+# EMAIL_TIMEOUT = 5
+# ANYMAIL = {
+#     "SENDGRID_API_KEY": env("SENDGRID_API_KEY"),
+#     "SENDGRID_API_URL": env("SENDGRID_API_URL", default="https://api.sendgrid.com/v3/"),
+# }
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "vasanth.techymeet@gmail.com"
+EMAIL_HOST_PASSWORD = "geof fbin aszr iyzk"
 
 # Default Overrides
 # ------------------------------------------------------------------------------
@@ -319,8 +338,8 @@ APP_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 # Payment Gateway
 # ------------------------------------------------------------------------------
-RAZORPAY_KEY_ID = env.str("RAZORPAY_KEY_ID", default="")
-RAZORPAY_KEY_SECRET = env.str("RAZORPAY_KEY_SECRET", default="")
+STRIPE_PUBLISHABLE_KEY = env.str("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
 
 # Azure & Services
 # ------------------------------------------------------------------------------
@@ -382,3 +401,8 @@ LOGGING = {
 # SSL_CONFIG
 # ------------------------------------------------------------------------------
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+RAZORPAY_KEY_ID = env.str("RAZORPAY_KEY_ID")
+RAZORPAY_SECRET_KEY = env.str("RAZORPAY_SECRET_KEY")
+RAZORPAY_WEBHOOK_SECRET = "Tn48aj9047@"
